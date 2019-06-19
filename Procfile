@@ -1,1 +1,1 @@
-web: gunicorn ivr-ns-rest:create_app()
+web: gunicorn "ivr-ns-rest:create_app('ivr-ns-rest.settings')"

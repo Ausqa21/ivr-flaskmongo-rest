@@ -11,6 +11,7 @@ python-dotenv = "*"
 "flask-argon2" = "*"
 flask-jwt-extended = "*"
 jsonschema = "*"
+gunicorn = "*"
 
 [dev-packages]
 

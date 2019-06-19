@@ -56,9 +56,7 @@ def get_all_users():
 # Create a user
 @main.route("/create", methods=["POST"])
 def create_user():
-    user_data = validate_user(request.get_json())
-    if user_data["ok"]:
-        pass
+    user_data = request.get_json()
     if user_data.get("first_name") is not None and \
             user_data.get("last_name") is not None and \
             user_data.get("passcode") is not None and \

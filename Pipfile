@@ -1,0 +1,18 @@
+[[source]]
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+flask = "*"
+flask-pymongo = "*"
+python-dotenv = "*"
+"dnspython3" = "*"
+"flask-argon2" = "*"
+flask-jwt-extended = "*"
+jsonschema = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.7"

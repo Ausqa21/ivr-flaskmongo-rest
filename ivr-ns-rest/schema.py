@@ -20,7 +20,7 @@ user_schema = {
         },
         "passcode": {
             "type": "string",
-            "maxLength": 4
+            "pattern": "^[0-9]{4}$"
         }
     },
     "additionalProperties": False

@@ -42,9 +42,9 @@ def get_user(number):
     user_collection = mongo.db.users
     user = user_collection.find_one({"number": number})
     if argon_two.check_password_hash(user["passcode"], user_data["passcode"]):
-        return jsonify(user)
+        return jsonify(user), 200
     else:
-        return jsonify({"ok": False, "errorMessage": "Check your inputs and try again"})
+        return jsonify({"ok": False, "errorMessage": "Check your inputs and try again"}), 400
 
 
 # Get all users

@@ -13,7 +13,7 @@ user_schema = {
             "type": "string"
         },
         "balance": {
-            "type": "double"
+            "type": "number"
         },
         "number": {
             "type": "string"
@@ -27,10 +27,11 @@ user_schema = {
 }
 
 
-def validate_user(data):
+def validate_user_data(data):
     try:
         validate(data, user_schema)
     except ValidationError as e:
         return {'ok': False, 'message': e}
     except SchemaError as e:
         return {'ok': False, 'message': e}
+    return {"ok": True, "data": data}

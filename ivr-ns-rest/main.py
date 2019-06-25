@@ -28,19 +28,19 @@ def index():
 # Check if user exists [EXCEPTION HANDLING]
 @main.route("/check/<number>", methods=["GET"])
 def check_user(number):
-    user_collection = mongo.db.users
-    if user_collection.find_one({"number": number}):
-        return jsonify({"is_user": True})
+    # user_collection = mongo.db.users
+    if mongo.db.users.find_one({"number": number}):
+        return jsonify({"is_user": True}), 200
     else:
-        return jsonify({"is_user": False})
+        return jsonify({"is_user": False}), 404
 
 
 # Get a user [EXCEPTION HANDLING]
 @main.route("/user/<number>", methods=["POST"])
 def get_user(number):
     user_data = request.get_json()
-    user_collection = mongo.db.users
-    user = user_collection.find_one({"number": number})
+    # user_collection = mongo.db.users
+    user = mongo.db.users.find_one({"number": number})
     if user:
         if argon_two.check_password_hash(user["passcode"], user_data["passcode"]):
             return jsonify(user), 200

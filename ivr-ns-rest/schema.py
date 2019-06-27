@@ -16,7 +16,8 @@ user_schema = {
             "type": "number"
         },
         "number": {
-            "type": "string"
+            "type": "string",
+            "pattern": "^[0-9]{10}$"
         },
         "passcode": {
             "type": "string",

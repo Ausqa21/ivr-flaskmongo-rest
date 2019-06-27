@@ -28,19 +28,19 @@ def index():
 # Check if user exists [EXCEPTION HANDLING]
 @main.route("/check/<number>", methods=["GET"])
 def check_user(number):
-    user_collection = mongo.db.users
-    if user_collection.find_one({"number": number}):
-        return jsonify({"is_user": True})
+    # user_collection = mongo.db.users
+    if mongo.db.users.find_one({"number": number}):
+        return jsonify({"is_user": True}), 200
     else:
-        return jsonify({"is_user": False})
+        return jsonify({"is_user": False}), 404
 
 
 # Get a user [EXCEPTION HANDLING]
 @main.route("/user/<number>", methods=["POST"])
 def get_user(number):
     user_data = request.get_json()
-    user_collection = mongo.db.users
-    user = user_collection.find_one({"number": number})
+    # user_collection = mongo.db.users
+    user = mongo.db.users.find_one({"number": number})
     if user:
         if argon_two.check_password_hash(user["passcode"], user_data["passcode"]):
             return jsonify(user), 200
@@ -85,3 +85,32 @@ def update_user():
     if user_data.get("query", {}) != {}:
         user_collection.update_one(user_data["query"], {"$set": user_data.get("payload", {})})
     return jsonify(user_data)
+
+
+@main.route("/user/credit", methods=["POST"])
+def credit_acc():
+    credit_data = request.get_json()
+    receiver_acc = mongo.db.users.find_one({"number": credit_data.get("receiver_number")})
+    user_acc = mongo.db.users.find_one({"number": credit_data["number"]})
+    if user_acc["balance"]:
+        if user_acc["balance"] >= credit_data["credit"]:
+            new_balance_receiver = float(receiver_acc["balance"]) + float(credit_data["credit"])
+            new_balance_sender = float(user_acc["balance"]) - float(credit_data["credit"])
+            # user["balance"] = new_balance
+            if credit_data.get("payload_receiver", {}) != {}:
+                credit_data["payload_receiver"]["balance"] = new_balance_receiver
+                mongo.db.users.update_one(receiver_acc, {"$set": credit_data.get("payload_receiver", {})})
+            if credit_data.get("payload_sender", {}) != {}:
+                credit_data["payload_sender"]["balance"] = new_balance_sender
+                mongo.db.users.update_one(user_acc, {"$set": credit_data.get("payload_sender", {})})
+                return jsonify({"ok": True, "message": "Transfer of funds completed successfully"}), 200
+            else:
+                return jsonify({"ok": False, "message": "No payload in your request"})
+        else:
+            return jsonify({"ok": False, "message": "Insufficient funds"})
+    else:
+        return jsonify({"ok": False, "message": "Sorry, there are no funds in your account"}), 400
+    # return f"<p>{user}</p>"
+
+
+# PREVENT INDEXERRORS WITH DICT.GET()
